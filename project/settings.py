@@ -20,11 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-<<<<<<< HEAD
 SECRET_KEY = 'django-insecure-w^jlebd)=ao41o&s86wx010c*%@1$wx!km2ek(%%1dcfrsq6mn'
-=======
-SECRET_KEY = 'django-insecure-)%+*-f4-7$o8d2ube93x7cob4^_2=2ubg*bn=9&gl746ow5v4b'
->>>>>>> bf27f1f962b7f580841c79f9ae9c9b8b5a6f814c
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -41,18 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-<<<<<<< HEAD
-    'HireBridge',
+    'hirebridge',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
-=======
-    'hirebridge',
-]
-
->>>>>>> bf27f1f962b7f580841c79f9ae9c9b8b5a6f814c
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
