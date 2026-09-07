@@ -1,0 +1,20 @@
+{
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "xprotocol",
+                "enableSsl": "Disabled"
+            },
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 33060,
+            "driver": "MySQL",
+            "name": "MYSQL Local",
+            "database": "hirebridge_db",
+            "username": "root",
+            "password": "0987654321",
+            "connectionTimeout": 30
+        }
+    ]
+}
