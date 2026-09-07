@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from HireBridge.models import ScoringCriteria
+from hirebridge.models import ScoringCriteria
 
 CRITERIA = [
     ("Skills", 20, "Relevant and recognized skills listed"),
