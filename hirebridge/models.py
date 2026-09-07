@@ -1,4 +1,4 @@
-from django.db import models
+﻿from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 
@@ -90,6 +90,8 @@ class Certification(models.Model):
     credential_id = models.CharField(max_length=100, blank=True)
 
 
+
+
 # ---------- 11: CV_UPLOAD ----------
 class CVUpload(models.Model):
     resume = models.ForeignKey(Resume, on_delete=models.CASCADE, related_name='uploads')
@@ -130,3 +132,40 @@ class ScoreDetail(models.Model):
     cv_score = models.ForeignKey(CVScore, on_delete=models.CASCADE, related_name='details')
     criteria = models.ForeignKey(ScoringCriteria, on_delete=models.CASCADE)
     obtained_score = models.IntegerField()
+
+# ---------- 16: APPLICATION ----------
+class Application(models.Model):
+    STATUS_CHOICES = (
+        ('pending', 'Pending'),
+        ('shortlisted', 'Shortlisted'),
+        ('rejected', 'Rejected'),
+        ('accepted', 'Accepted'),
+    )
+
+    user = models.ForeignKey(
+        UserProfile,
+        on_delete=models.CASCADE,
+        related_name='applications'
+    )
+    resume = models.ForeignKey(
+        Resume,
+        on_delete=models.CASCADE,
+        related_name='applications'
+    )
+    admin = models.ForeignKey(
+        AdminProfile,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='applications'
+    )
+    position = models.CharField(max_length=150)
+    application_date = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(
+        max_length=15,
+        choices=STATUS_CHOICES,
+        default='pending'
+    )
+
+    def __str__(self):
+        return f"{self.user.user.username} - {self.position}"
