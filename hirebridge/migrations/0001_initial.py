@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
                 ('title', models.CharField(max_length=150)),
                 ('date_created', models.DateTimeField(default=django.utils.timezone.now)),
                 ('status', models.CharField(choices=[('draft', 'Draft'), ('completed', 'Completed')], default='draft', max_length=10)),
-                ('admin', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='managed_resumes', to='HireBridge.adminprofile')),
+                ('admin', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='managed_resumes', to='hirebridge.adminprofile')),
             ],
         ),
         migrations.CreateModel(
@@ -59,7 +59,7 @@ class Migration(migrations.Migration):
                 ('start_date', models.DateField()),
                 ('end_date', models.DateField(blank=True, null=True)),
                 ('description', models.TextField(blank=True)),
-                ('resume', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='work_experience', to='HireBridge.resume')),
+                ('resume', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='work_experience', to='hirebridge.resume')),
             ],
         ),
         migrations.CreateModel(
@@ -75,7 +75,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('phone_number', models.CharField(max_length=20)),
-                ('user_profile', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='phones', to='HireBridge.userprofile')),
+                ('user_profile', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='phones', to='hirebridge.userprofile')),
             ],
         ),
         migrations.CreateModel(
@@ -84,7 +84,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('suggestion_text', models.CharField(max_length=255)),
                 ('suggestion_date', models.DateTimeField(auto_now_add=True)),
-                ('cv_score', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='suggestions', to='HireBridge.cvscore')),
+                ('cv_score', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='suggestions', to='hirebridge.cvscore')),
             ],
         ),
         migrations.CreateModel(
@@ -93,7 +93,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('skill_name', models.CharField(max_length=100)),
                 ('skill_level', models.CharField(choices=[('beginner', 'Beginner'), ('intermediate', 'Intermediate'), ('advanced', 'Advanced')], default='beginner', max_length=15)),
-                ('resume', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='skills', to='HireBridge.resume')),
+                ('resume', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='skills', to='hirebridge.resume')),
             ],
         ),
         migrations.CreateModel(
@@ -101,14 +101,14 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('obtained_score', models.IntegerField()),
-                ('criteria', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='HireBridge.scoringcriteria')),
-                ('cv_score', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='details', to='HireBridge.cvscore')),
+                ('criteria', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='hirebridge.scoringcriteria')),
+                ('cv_score', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='details', to='hirebridge.cvscore')),
             ],
         ),
         migrations.AddField(
             model_name='resume',
             name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='resumes', to='HireBridge.userprofile'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='resumes', to='hirebridge.userprofile'),
         ),
         migrations.CreateModel(
             name='Project',
@@ -118,7 +118,7 @@ class Migration(migrations.Migration):
                 ('description', models.TextField(blank=True)),
                 ('technologies_used', models.CharField(blank=True, max_length=255)),
                 ('project_link', models.URLField(blank=True)),
-                ('resume', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='projects', to='HireBridge.resume')),
+                ('resume', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='projects', to='hirebridge.resume')),
             ],
         ),
         migrations.CreateModel(
@@ -129,7 +129,7 @@ class Migration(migrations.Migration):
                 ('institution', models.CharField(max_length=150)),
                 ('start_date', models.DateField()),
                 ('end_date', models.DateField(blank=True, null=True)),
-                ('resume', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='education', to='HireBridge.resume')),
+                ('resume', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='education', to='hirebridge.resume')),
             ],
         ),
         migrations.CreateModel(
@@ -139,13 +139,13 @@ class Migration(migrations.Migration):
                 ('file_name', models.CharField(max_length=255)),
                 ('file_path', models.FileField(upload_to='uploaded_cvs/')),
                 ('upload_date', models.DateTimeField(auto_now_add=True)),
-                ('resume', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='uploads', to='HireBridge.resume')),
+                ('resume', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='uploads', to='hirebridge.resume')),
             ],
         ),
         migrations.AddField(
             model_name='cvscore',
             name='resume',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='scores', to='HireBridge.resume'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='scores', to='hirebridge.resume'),
         ),
         migrations.CreateModel(
             name='Certification',
@@ -156,7 +156,7 @@ class Migration(migrations.Migration):
                 ('issue_date', models.DateField(blank=True, null=True)),
                 ('expiry_date', models.DateField(blank=True, null=True)),
                 ('credential_id', models.CharField(blank=True, max_length=100)),
-                ('resume', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='certifications', to='HireBridge.resume')),
+                ('resume', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='certifications', to='hirebridge.resume')),
             ],
         ),
         migrations.CreateModel(
@@ -164,7 +164,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('phone_number', models.CharField(max_length=20)),
-                ('admin_profile', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='phones', to='HireBridge.adminprofile')),
+                ('admin_profile', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='phones', to='hirebridge.adminprofile')),
             ],
         ),
     ]
