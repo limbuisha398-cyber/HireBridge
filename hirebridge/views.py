@@ -1,8 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from .forms import RegistrationForm
-
+from .forms import RegistrationForm, ProfileForm
 
 def register(request):
     if request.method == 'POST':
@@ -59,4 +58,36 @@ def dashboard(request):
 def user_logout(request):
     logout(request)
     return redirect('login')
+def profile(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    user_profile = request.user.profile
+
+    if request.method == 'POST':
+        form = ProfileForm(
+            request.POST,
+            instance=user_profile,
+            user=request.user
+        )
+
+        if form.is_valid():
+            form.save()
+            messages.success(
+                request,
+                'Profile updated successfully.'
+            )
+            return redirect('profile')
+
+    else:
+        form = ProfileForm(
+            instance=user_profile,
+            user=request.user
+        )
+
+    return render(
+        request,
+        'profile.html',
+        {'form': form}
+    )
 

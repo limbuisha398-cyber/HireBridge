@@ -88,3 +88,56 @@ class RegistrationForm(forms.ModelForm):
 
         return user
 
+
+class ProfileForm(forms.ModelForm):
+    first_name = forms.CharField(max_length=150)
+    last_name = forms.CharField(max_length=150)
+    email = forms.EmailField()
+
+    phone_number = forms.CharField(
+        max_length=20,
+        required=False
+    )
+
+    class Meta:
+        model = UserProfile
+        fields = ['address']
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')
+        super().__init__(*args, **kwargs)
+
+        self.fields['first_name'].initial = self.user.first_name
+        self.fields['last_name'].initial = self.user.last_name
+        self.fields['email'].initial = self.user.email
+
+        phone = self.instance.phones.first()
+
+        if phone:
+            self.fields['phone_number'].initial = phone.phone_number
+
+    def save(self, commit=True):
+        profile = super().save(commit=commit)
+
+        self.user.first_name = self.cleaned_data['first_name']
+        self.user.last_name = self.cleaned_data['last_name']
+        self.user.email = self.cleaned_data['email']
+        self.user.save()
+
+        phone_number = self.cleaned_data.get('phone_number')
+        phone = self.instance.phones.first()
+
+        if phone_number:
+            if phone:
+                phone.phone_number = phone_number
+                phone.save()
+            else:
+                UserPhone.objects.create(
+                    user_profile=profile,
+                    phone_number=phone_number
+                )
+        elif phone:
+            phone.delete()
+
+        return profile
+
