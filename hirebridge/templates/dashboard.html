@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>HireBridge - Dashboard</title>
+</head>
+
+<body>
+
+    <h1>Welcome to HireBridge</h1>
+
+    <h2>Hello, {{ request.user.first_name }}!</h2>
+
+    <p>You are successfully logged in.</p>
+
+    <h3>Resume Services</h3>
+
+    <ul>
+        <li>Create CV</li>
+        <li>Upload Existing CV</li>
+        <li>Analyze CV</li>
+        <li>View CV Score</li>
+        <li>View Suggestions</li>
+    </ul>
+
+    <a href="{% url 'logout' %}">Logout</a>
+
+</body>
+
+</html>
