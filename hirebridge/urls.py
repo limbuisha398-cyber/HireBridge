@@ -7,5 +7,23 @@ urlpatterns = [
      path('dashboard/', views.dashboard, name='dashboard'),
      path('logout/', views.user_logout, name='logout'),
      path('profile/', views.profile, name='profile'),
+     path('create-resume/', views.create_resume, name='create_resume'),
+     path('resume/<int:resume_id>/education/', views.add_education, name='add_education'),
+     path('resume/<int:resume_id>/skill/', views.add_skill, name='add_skill'),
+     path(
+    'resume/<int:resume_id>/work-experience/',
+    views.add_work_experience,
+    name='add_work_experience'
+),
+path(
+    'resume/<int:resume_id>/project/',
+    views.add_project,
+    name='add_project'
+),
+path(
+    'resume/<int:resume_id>/certification/',
+    views.add_certification,
+    name='add_certification'
+),
 ]
 

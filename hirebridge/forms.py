@@ -1,7 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import UserProfile, UserPhone
-
+from .models import UserProfile, UserPhone, Resume, Education, Skill, WorkExperience, Project, Certification
 
 class RegistrationForm(forms.ModelForm):
     password = forms.CharField(
@@ -140,4 +139,85 @@ class ProfileForm(forms.ModelForm):
             phone.delete()
 
         return profile
+class ResumeForm(forms.ModelForm):
+    class Meta:
+     model = Resume
+     fields = ['title', 'status']
+class EducationForm(forms.ModelForm):
 
+    class Meta:
+        model = Education
+        fields = [
+            'degree',
+            'institution',
+            'start_date',
+            'end_date',
+        ]
+
+        widgets = {
+            'start_date': forms.DateInput(
+                attrs={'type': 'date'}
+            ),
+            'end_date': forms.DateInput(
+                attrs={'type': 'date'}
+            ),
+        }     
+class SkillForm(forms.ModelForm):
+
+    class Meta:
+        model = Skill
+        fields = [
+            'skill_name',
+            'skill_level',
+        ]
+class WorkExperienceForm(forms.ModelForm):
+
+    class Meta:
+        model = WorkExperience
+        fields = [
+            'job_title',
+            'company_name',
+            'start_date',
+            'end_date',
+            'description',
+        ]
+
+        widgets = {
+            'start_date': forms.DateInput(
+                attrs={'type': 'date'}
+            ),
+            'end_date': forms.DateInput(
+                attrs={'type': 'date'}
+            ),
+        } 
+class ProjectForm(forms.ModelForm):
+
+    class Meta:
+        model = Project
+        fields = [
+            'project_name',
+            'description',
+            'technologies_used',
+            'project_link',
+        ]
+class CertificationForm(forms.ModelForm):
+
+    class Meta:
+        model = Certification
+        fields = [
+            'certification_name',
+            'issuing_organization',
+            'issue_date',
+            'expiry_date',
+            'credential_id',
+        ]
+
+        widgets = {
+            'issue_date': forms.DateInput(
+                attrs={'type': 'date'}
+            ),
+            'expiry_date': forms.DateInput(
+                attrs={'type': 'date'}
+            ),
+        }    
+ 
