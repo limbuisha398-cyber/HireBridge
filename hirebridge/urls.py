@@ -24,6 +24,11 @@ path(
     views.edit_project,
     name='edit_project'
 ),
+path(
+    'resume/<int:resume_id>/certification/<int:certification_id>/edit/',
+    views.edit_certification,
+    name='edit_certification'
+),
      path('resume/<int:resume_id>/skill/', views.add_skill, name='add_skill'),
      path(
     'resume/<int:resume_id>/work-experience/',

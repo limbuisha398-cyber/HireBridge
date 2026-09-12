@@ -62,6 +62,9 @@
         </a>
 
         {% endfor %}
+
+        {% endif %}
+
         {% for skill in resume.skills.all %}
 
         <p>
@@ -72,6 +75,19 @@
         <a href="{% url 'edit_skill' resume_id=resume.id skill_id=skill.id %}">
             Edit Skill
         </a>
+
+        {% endfor %}
+
+        {% for work in resume.work_experience.all %}
+
+        <p>
+            Work Experience:
+            {{ work.job_title }} -
+            {{ work.company_name }}
+        </p>
+
+        {% endfor %}
+
         {% for project in resume.projects.all %}
 
         <p>
@@ -84,10 +100,18 @@
 
         {% endfor %}
 
+        {% for certification in resume.certifications.all %}
+
+        <p>
+            Certification:
+            {{ certification.certification_name }}
+        </p>
+
+        <a href="{% url 'edit_certification' resume_id=resume.id certification_id=certification.id %}">
+            Edit Certification
+        </a>
+
         {% endfor %}
-
-        {% endif %}
-
 
     </div>
 
@@ -132,7 +156,6 @@
     <a href="{% url 'logout' %}">
         Logout
     </a>
-
 
 </body>
 

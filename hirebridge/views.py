@@ -22,7 +22,9 @@ from .models import (
     Resume,
     Education,
     Skill,
+    WorkExperience,
     Project,
+    Certification,
     CVScore,
     Suggestion,
     ScoreDetail,
@@ -283,6 +285,41 @@ def edit_project(request, resume_id, project_id):
             'form': form,
             'resume': resume,
             'project': project
+        }
+    )
+@login_required
+def edit_certification(request, resume_id, certification_id):
+    profile = get_object_or_404(UserProfile, user=request.user)
+    resume = get_object_or_404(Resume, id=resume_id, user=profile)
+    certification = get_object_or_404(
+        Certification,
+        id=certification_id,
+        resume=resume
+    )
+
+    if request.method == 'POST':
+        form = CertificationForm(
+            request.POST,
+            instance=certification
+        )
+
+        if form.is_valid():
+            form.save()
+            messages.success(
+                request,
+                'Certification updated successfully.'
+            )
+            return redirect('dashboard')
+    else:
+        form = CertificationForm(instance=certification)
+
+    return render(
+        request,
+        'edit_certification.html',
+        {
+            'form': form,
+            'resume': resume,
+            'certification': certification
         }
     )
 
