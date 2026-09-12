@@ -25,5 +25,15 @@ path(
     views.add_certification,
     name='add_certification'
 ),
+path(
+    'resume/<int:resume_id>/upload-cv/',
+    views.upload_cv,
+    name='upload_cv'
+),
+path(
+    'resume/<int:resume_id>/analyze/',
+    views.analyze_cv,
+    name='analyze_cv'
+),
 ]
 

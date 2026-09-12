@@ -1,7 +1,16 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import UserProfile, UserPhone, Resume, Education, Skill, WorkExperience, Project, Certification
-
+from .models import (
+    UserProfile,
+    UserPhone,
+    Resume,
+    Education,
+    Skill,
+    WorkExperience,
+    Project,
+    Certification,
+    CVUpload,
+)
 class RegistrationForm(forms.ModelForm):
     password = forms.CharField(
         widget=forms.PasswordInput
@@ -219,5 +228,18 @@ class CertificationForm(forms.ModelForm):
             'expiry_date': forms.DateInput(
                 attrs={'type': 'date'}
             ),
-        }    
+        }  
+class CVUploadForm(forms.ModelForm):
+
+    class Meta:
+        model = CVUpload
+        fields = ['file_path']
+
+        widgets = {
+            'file_path': forms.ClearableFileInput(
+                attrs={
+                    'accept': '.pdf,.doc,.docx'
+                }
+            ),
+        }  
  

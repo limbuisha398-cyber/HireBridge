@@ -13,19 +13,79 @@
 
     <p>You are successfully logged in.</p>
 
+    <hr>
+
+    <h3>My Resumes</h3>
+
+    {% if resumes %}
+
+    {% for resume in resumes %}
+
+    <div>
+
+        <h4>{{ resume.title }}</h4>
+
+        <p>
+            Status: {{ resume.get_status_display }}
+        </p>
+
+        <a href="{% url 'add_education' resume_id=resume.id %}">
+            Continue Resume
+        </a>
+
+        |
+
+        <a href="{% url 'upload_cv' resume_id=resume.id %}">
+            Upload CV
+        </a>
+
+        |
+
+        <a href="{% url 'analyze_cv' resume_id=resume.id %}">
+            Analyze CV
+        </a>
+
+    </div>
+
+    <hr>
+
+    {% endfor %}
+
+    {% else %}
+
+    <p>You have not created any resumes yet.</p>
+
+    {% endif %}
+
     <h3>Resume Services</h3>
 
     <ul>
         <li>
-            <a href="{% url 'create_resume' %}">Create CV</a>
+            <a href="{% url 'create_resume' %}">
+                Create CV
+            </a>
         </li>
-        <li>Upload Existing CV</li>
-        <li>Analyze CV</li>
-        <li>View CV Score</li>
-        <li>View Suggestions</li>
+
+        <li>
+            Upload Existing CV
+        </li>
+
+        <li>
+            Analyze CV
+        </li>
+
+        <li>
+            View CV Score
+        </li>
+
+        <li>
+            View Suggestions
+        </li>
     </ul>
 
-    <a href="{% url 'logout' %}">Logout</a>
+    <a href="{% url 'logout' %}">
+        Logout
+    </a>
 
 </body>
 
