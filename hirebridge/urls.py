@@ -63,5 +63,10 @@ path(
     views.analyze_cv,
     name='analyze_cv'
 ),
+path(
+    'resume/<int:resume_id>/download/',
+    views.download_cv,
+    name='download_cv'
+),
 ]
 

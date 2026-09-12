@@ -45,6 +45,11 @@
         <a href="{% url 'analyze_cv' resume_id=resume.id %}">
             Analyze CV
         </a>
+        |
+
+        <a href="{% url 'download_cv' resume_id=resume.id %}">
+            Download CV
+        </a>
 
         {% if resume.education.all %}
 

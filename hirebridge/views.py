@@ -1,10 +1,16 @@
 import re
+from io import BytesIO
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.http import HttpResponse
 
+from reportlab.lib.enums import TA_CENTER
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from .forms import (
     RegistrationForm,
     ProfileForm,
@@ -732,3 +738,253 @@ def analyze_cv(request, resume_id):
             'suggestions': cv_score.suggestions.all(),
         }
     )
+@login_required
+def download_cv(request, resume_id):
+    profile = get_object_or_404(
+        UserProfile,
+        user=request.user
+    )
+
+    resume = get_object_or_404(
+        Resume,
+        id=resume_id,
+        user=profile
+    )
+
+    buffer = BytesIO()
+
+    document = SimpleDocTemplate(
+        buffer,
+        pagesize=A4,
+        rightMargin=40,
+        leftMargin=40,
+        topMargin=40,
+        bottomMargin=40
+    )
+
+    styles = getSampleStyleSheet()
+
+    title_style = ParagraphStyle(
+        'CVTitle',
+        parent=styles['Title'],
+        alignment=TA_CENTER,
+        fontSize=20,
+        spaceAfter=10
+    )
+
+    heading_style = ParagraphStyle(
+        'CVHeading',
+        parent=styles['Heading2'],
+        fontSize=14,
+        spaceBefore=12,
+        spaceAfter=6
+    )
+
+    normal_style = ParagraphStyle(
+        'CVNormal',
+        parent=styles['BodyText'],
+        fontSize=10,
+        leading=14,
+        spaceAfter=4
+    )
+
+    story = []
+
+    full_name = request.user.get_full_name() or request.user.username
+
+    story.append(
+        Paragraph(full_name, title_style)
+    )
+
+    story.append(
+        Paragraph(resume.title, styles['Heading1'])
+    )
+
+    if profile.address:
+        story.append(
+            Paragraph(
+                f"Address: {profile.address}",
+                normal_style
+            )
+        )
+
+    phone_numbers = profile.phones.all()
+
+    for phone in phone_numbers:
+        story.append(
+            Paragraph(
+                f"Phone: {phone.phone_number}",
+                normal_style
+            )
+        )
+
+    story.append(Spacer(1, 10))
+
+    education_list = resume.education.all()
+
+    if education_list.exists():
+        story.append(
+            Paragraph("Education", heading_style)
+        )
+
+        for education in education_list:
+            end_date = (
+                education.end_date.strftime("%Y-%m-%d")
+                if education.end_date
+                else "Present"
+            )
+
+            story.append(
+                Paragraph(
+                    f"<b>{education.degree}</b> - "
+                    f"{education.institution}<br/>"
+                    f"{education.start_date.strftime('%Y-%m-%d')} "
+                    f"to {end_date}",
+                    normal_style
+                )
+            )
+
+    skills = resume.skills.all()
+
+    if skills.exists():
+        story.append(
+            Paragraph("Skills", heading_style)
+        )
+
+        for skill in skills:
+            story.append(
+                Paragraph(
+                    f"{skill.skill_name} "
+                    f"({skill.get_skill_level_display()})",
+                    normal_style
+                )
+            )
+
+    work_experiences = resume.work_experience.all()
+
+    if work_experiences.exists():
+        story.append(
+            Paragraph("Work Experience", heading_style)
+        )
+
+        for work in work_experiences:
+            end_date = (
+                work.end_date.strftime("%Y-%m-%d")
+                if work.end_date
+                else "Present"
+            )
+
+            story.append(
+                Paragraph(
+                    f"<b>{work.job_title}</b> - "
+                    f"{work.company_name}<br/>"
+                    f"{work.start_date.strftime('%Y-%m-%d')} "
+                    f"to {end_date}",
+                    normal_style
+                )
+            )
+
+            if work.description:
+                story.append(
+                    Paragraph(
+                        work.description,
+                        normal_style
+                    )
+                )
+
+    projects = resume.projects.all()
+
+    if projects.exists():
+        story.append(
+            Paragraph("Projects", heading_style)
+        )
+
+        for project in projects:
+            story.append(
+                Paragraph(
+                    f"<b>{project.project_name}</b>",
+                    normal_style
+                )
+            )
+
+            if project.description:
+                story.append(
+                    Paragraph(
+                        project.description,
+                        normal_style
+                    )
+                )
+
+            if project.technologies_used:
+                story.append(
+                    Paragraph(
+                        f"Technologies: {project.technologies_used}",
+                        normal_style
+                    )
+                )
+
+            if project.project_link:
+                story.append(
+                    Paragraph(
+                        f"Project Link: {project.project_link}",
+                        normal_style
+                    )
+                )
+
+    certifications = resume.certifications.all()
+
+    if certifications.exists():
+        story.append(
+            Paragraph("Certifications", heading_style)
+        )
+
+        for certification in certifications:
+            text = (
+                f"<b>{certification.certification_name}</b>"
+            )
+
+            if certification.issuing_organization:
+                text += (
+                    f" - {certification.issuing_organization}"
+                )
+
+            if certification.issue_date:
+                text += (
+                    f"<br/>Issue Date: "
+                    f"{certification.issue_date.strftime('%Y-%m-%d')}"
+                )
+
+            if certification.expiry_date:
+                text += (
+                    f"<br/>Expiry Date: "
+                    f"{certification.expiry_date.strftime('%Y-%m-%d')}"
+                )
+
+            if certification.credential_id:
+                text += (
+                    f"<br/>Credential ID: "
+                    f"{certification.credential_id}"
+                )
+
+            story.append(
+                Paragraph(
+                    text,
+                    normal_style
+                )
+            )
+
+    document.build(story)
+
+    pdf = buffer.getvalue()
+    buffer.close()
+
+    response = HttpResponse(
+        pdf,
+        content_type='application/pdf'
+    )
+
+    response['Content-Disposition'] = (
+        f'attachment; filename="{resume.title}.pdf"'
+    )
+
+    return response
