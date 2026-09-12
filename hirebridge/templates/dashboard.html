@@ -62,8 +62,21 @@
         </a>
 
         {% endfor %}
+        {% for skill in resume.skills.all %}
+
+        <p>
+            Skill: {{ skill.skill_name }}
+            ({{ skill.get_skill_level_display }})
+        </p>
+
+        <a href="{% url 'edit_skill' resume_id=resume.id skill_id=skill.id %}">
+            Edit Skill
+        </a>
+
+        {% endfor %}
 
         {% endif %}
+
 
     </div>
 

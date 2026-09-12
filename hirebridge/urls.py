@@ -14,6 +14,11 @@ urlpatterns = [
     views.edit_education,
     name='edit_education'
 ),
+path(
+    'resume/<int:resume_id>/skill/<int:skill_id>/edit/',
+    views.edit_skill,
+    name='edit_skill'
+),
      path('resume/<int:resume_id>/skill/', views.add_skill, name='add_skill'),
      path(
     'resume/<int:resume_id>/work-experience/',
