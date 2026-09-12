@@ -1,6 +1,4 @@
-import re
 from io import BytesIO
-
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -11,6 +9,7 @@ from reportlab.lib.enums import TA_CENTER
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+import re
 from .forms import (
     RegistrationForm,
     ProfileForm,
@@ -81,18 +80,22 @@ def user_login(request):
 
     return render(request, 'registration/login.html')
 
-
 @login_required
 def dashboard(request):
-    profile = get_object_or_404(UserProfile, user=request.user)
-    resumes = Resume.objects.filter(user=profile).prefetch_related('education')
+    profile, created = UserProfile.objects.get_or_create(
+        user=request.user
+    )
+
+    resumes = Resume.objects.filter(user=profile)
 
     return render(
         request,
         'dashboard.html',
-        {'resumes': resumes}
+        {
+            'profile': profile,
+            'resumes': resumes,
+        }
     )
-
 @login_required
 def user_logout(request):
     logout(request)
@@ -740,11 +743,9 @@ def analyze_cv(request, resume_id):
     )
 @login_required
 def download_cv(request, resume_id):
-    profile = get_object_or_404(
-        UserProfile,
-        user=request.user
-    )
-
+    profile, created = UserProfile.objects.get_or_create(
+    user=request.user
+)
     resume = get_object_or_404(
         Resume,
         id=resume_id,
