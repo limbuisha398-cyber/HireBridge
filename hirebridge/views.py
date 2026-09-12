@@ -1,3 +1,4 @@
+import re
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
@@ -30,11 +31,14 @@ def register(request):
 
         if form.is_valid():
             form.save()
+
             messages.success(
                 request,
                 'Registration successful. You can now log in.'
             )
+
             return redirect('login')
+
     else:
         form = RegistrationForm()
 
@@ -108,11 +112,14 @@ def profile(request):
 
         if form.is_valid():
             form.save()
+
             messages.success(
                 request,
                 'Profile updated successfully.'
             )
+
             return redirect('profile')
+
     else:
         form = ProfileForm(
             instance=user_profile,
@@ -149,6 +156,7 @@ def create_resume(request):
                 'add_education',
                 resume_id=resume.id
             )
+
     else:
         form = ResumeForm()
 
@@ -188,54 +196,13 @@ def add_education(request, resume_id):
                 'add_skill',
                 resume_id=resume.id
             )
+
     else:
         form = EducationForm()
 
     return render(
         request,
         'add_education.html',
-        {
-            'form': form,
-            'resume': resume
-        }
-    )
-
-
-def add_work_experience(request, resume_id):
-    if not request.user.is_authenticated:
-        return redirect('login')
-
-    user_profile = request.user.profile
-
-    resume = get_object_or_404(
-        Resume,
-        id=resume_id,
-        user=user_profile
-    )
-
-    if request.method == 'POST':
-        form = WorkExperienceForm(request.POST)
-
-        if form.is_valid():
-            work_experience = form.save(commit=False)
-            work_experience.resume = resume
-            work_experience.save()
-
-            messages.success(
-                request,
-                'Work experience added successfully.'
-            )
-
-            return redirect(
-                'add_project',
-                resume_id=resume.id
-            )
-    else:
-        form = WorkExperienceForm()
-
-    return render(
-        request,
-        'add_work_experience.html',
         {
             'form': form,
             'resume': resume
@@ -272,12 +239,56 @@ def add_skill(request, resume_id):
                 'add_work_experience',
                 resume_id=resume.id
             )
+
     else:
         form = SkillForm()
 
     return render(
         request,
         'add_skill.html',
+        {
+            'form': form,
+            'resume': resume
+        }
+    )
+
+
+def add_work_experience(request, resume_id):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    user_profile = request.user.profile
+
+    resume = get_object_or_404(
+        Resume,
+        id=resume_id,
+        user=user_profile
+    )
+
+    if request.method == 'POST':
+        form = WorkExperienceForm(request.POST)
+
+        if form.is_valid():
+            work_experience = form.save(commit=False)
+            work_experience.resume = resume
+            work_experience.save()
+
+            messages.success(
+                request,
+                'Work experience added successfully.'
+            )
+
+            return redirect(
+                'add_project',
+                resume_id=resume.id
+            )
+
+    else:
+        form = WorkExperienceForm()
+
+    return render(
+        request,
+        'add_work_experience.html',
         {
             'form': form,
             'resume': resume
@@ -314,6 +325,7 @@ def add_project(request, resume_id):
                 'add_certification',
                 resume_id=resume.id
             )
+
     else:
         form = ProjectForm()
 
@@ -356,6 +368,7 @@ def add_certification(request, resume_id):
                 'add_certification',
                 resume_id=resume.id
             )
+
     else:
         form = CertificationForm()
 
@@ -388,11 +401,14 @@ def upload_cv(request, resume_id):
         )
 
         if form.is_valid():
+            uploaded_file = request.FILES.get('file_path')
+
             cv_upload = form.save(commit=False)
             cv_upload.resume = resume
-            cv_upload.file_name = request.FILES[
-                'file_path'
-            ].name
+
+            if uploaded_file:
+                cv_upload.file_name = uploaded_file.name
+
             cv_upload.save()
 
             messages.success(
@@ -404,6 +420,7 @@ def upload_cv(request, resume_id):
                 'upload_cv',
                 resume_id=resume.id
             )
+
     else:
         form = CVUploadForm()
 
@@ -490,45 +507,53 @@ def analyze_cv(request, resume_id):
     }
 
     for education in resume.education.all():
-        section_text['Education'] += ' '
-        section_text['Education'] += education.degree or ''
-        section_text['Education'] += ' '
-        section_text['Education'] += education.institution or ''
+        section_text['Education'] += (
+            ' ' +
+            (education.degree or '') +
+            ' ' +
+            (education.institution or '')
+        )
 
     for skill in resume.skills.all():
-        section_text['Skills'] += ' '
-        section_text['Skills'] += skill.skill_name or ''
-        section_text['Skills'] += ' '
-        section_text['Skills'] += skill.skill_level or ''
+        section_text['Skills'] += (
+            ' ' +
+            (skill.skill_name or '') +
+            ' ' +
+            (skill.skill_level or '')
+        )
 
     for work in resume.work_experience.all():
-        section_text['Work Experience'] += ' '
-        section_text['Work Experience'] += work.job_title or ''
-        section_text['Work Experience'] += ' '
-        section_text['Work Experience'] += work.company_name or ''
-        section_text['Work Experience'] += ' '
-        section_text['Work Experience'] += work.description or ''
+        section_text['Work Experience'] += (
+            ' ' +
+            (work.job_title or '') +
+            ' ' +
+            (work.company_name or '') +
+            ' ' +
+            (work.description or '')
+        )
 
     for project in resume.projects.all():
-        section_text['Projects'] += ' '
-        section_text['Projects'] += project.project_name or ''
-        section_text['Projects'] += ' '
-        section_text['Projects'] += project.description or ''
-        section_text['Projects'] += ' '
-        section_text['Projects'] += project.technologies_used or ''
+        section_text['Projects'] += (
+            ' ' +
+            (project.project_name or '') +
+            ' ' +
+            (project.description or '') +
+            ' ' +
+            (project.technologies_used or '')
+        )
 
     for certification in resume.certifications.all():
-        section_text['Certifications'] += ' '
-        section_text['Certifications'] += certification.certification_name or ''
-        section_text['Certifications'] += ' '
-        section_text['Certifications'] += certification.issuing_organization or ''
-        section_text['Certifications'] += ' '
-        section_text['Certifications'] += certification.credential_id or ''
+        section_text['Certifications'] += (
+            ' ' +
+            (certification.certification_name or '') +
+            ' ' +
+            (certification.issuing_organization or '') +
+            ' ' +
+            (certification.credential_id or '')
+        )
 
-    for criteria_name in section_text:
-        section_text[criteria_name] = section_text[
-            criteria_name
-        ].lower()
+    for section in section_text:
+        section_text[section] = section_text[section].lower()
 
     scoring_criteria = {}
 
@@ -542,6 +567,7 @@ def analyze_cv(request, resume_id):
     criteria_scores = {}
 
     for criteria_name, keyword_list in keywords.items():
+
         maximum_score = scoring_criteria[
             criteria_name
         ].maximum_score
@@ -549,17 +575,28 @@ def analyze_cv(request, resume_id):
         matched_keywords = []
 
         for keyword in keyword_list:
-            if keyword.lower() in section_text[criteria_name]:
+
+            keyword_pattern = (
+                r'\b' +
+                re.escape(keyword.lower()) +
+                r'\b'
+            )
+
+            if re.search(
+                keyword_pattern,
+                section_text[criteria_name]
+            ):
                 matched_keywords.append(keyword)
 
         if matched_keywords:
-            score_per_keyword = (
+            points_per_keyword = (
                 maximum_score / len(keyword_list)
             )
 
             obtained_score = round(
-                len(matched_keywords) * score_per_keyword
+                len(matched_keywords) * points_per_keyword
             )
+
         else:
             obtained_score = 0
 
