@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>HireBridge - Upload CV</title>
+</head>
+
+<body>
+
+    <h1>Upload CV</h1>
+
+    <h2>{{ resume.title }}</h2>
+
+    {% if messages %}
+    {% for message in messages %}
+    <p>{{ message }}</p>
+    {% endfor %}
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">Upload CV</button>
+    </form>
+    <br>
+
+    <a href="{% url 'analyze_cv' resume_id=resume.id %}">
+        <button type="button">Analyze CV</button>
+    </a>
+
+    <br>
+
+    <a href="{% url 'dashboard' %}">Back to Dashboard</a>
+
+</body>
+
+</html>

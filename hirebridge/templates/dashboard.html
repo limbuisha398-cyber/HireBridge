@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>HireBridge - Dashboard</title>
+</head>
+
+<body>
+
+    <h1>Welcome to HireBridge</h1>
+
+    <h2>Hello, {{ request.user.first_name }}!</h2>
+
+    <p>You are successfully logged in.</p>
+
+    <hr>
+
+    <h3>My Resumes</h3>
+
+    {% if resumes %}
+
+    {% for resume in resumes %}
+
+    <div>
+
+        <h4>{{ resume.title }}</h4>
+
+        <p>
+            Status: {{ resume.get_status_display }}
+        </p>
+
+        <a href="{% url 'add_education' resume_id=resume.id %}">
+            Continue Resume
+        </a>
+
+        |
+
+        <a href="{% url 'upload_cv' resume_id=resume.id %}">
+            Upload CV
+        </a>
+
+        |
+
+        <a href="{% url 'analyze_cv' resume_id=resume.id %}">
+            Analyze CV
+        </a>
+        |
+
+        <a href="{% url 'download_cv' resume_id=resume.id %}">
+            Download CV
+        </a>
+
+        {% if resume.education.all %}
+
+        <h5>Education</h5>
+
+        {% for education in resume.education.all %}
+
+        <p>
+            {{ education.degree }} -
+            {{ education.institution }}
+        </p>
+
+        <a href="{% url 'edit_education' resume_id=resume.id education_id=education.id %}">
+            Edit Education
+        </a>
+
+        {% endfor %}
+
+        {% endif %}
+
+        {% for skill in resume.skills.all %}
+
+        <p>
+            Skill: {{ skill.skill_name }}
+            ({{ skill.get_skill_level_display }})
+        </p>
+
+        <a href="{% url 'edit_skill' resume_id=resume.id skill_id=skill.id %}">
+            Edit Skill
+        </a>
+
+        {% endfor %}
+
+        {% for work in resume.work_experience.all %}
+
+        <p>
+            Work Experience:
+            {{ work.job_title }} -
+            {{ work.company_name }}
+        </p>
+
+        <a href="{% url 'edit_work_experience' resume_id=resume.id work_id=work.id %}">
+            Edit Work Experience
+        </a>
+
+        {% endfor %}
+
+
+
+        {% for project in resume.projects.all %}
+
+        <p>
+            Project: {{ project.project_name }}
+        </p>
+
+        <a href="{% url 'edit_project' resume_id=resume.id project_id=project.id %}">
+            Edit Project
+        </a>
+
+        {% endfor %}
+
+        {% for certification in resume.certifications.all %}
+
+        <p>
+            Certification:
+            {{ certification.certification_name }}
+        </p>
+
+        <a href="{% url 'edit_certification' resume_id=resume.id certification_id=certification.id %}">
+            Edit Certification
+        </a>
+
+        {% endfor %}
+
+    </div>
+
+    <hr>
+
+    {% endfor %}
+
+    {% else %}
+
+    <p>You have not created any resumes yet.</p>
+
+    {% endif %}
+
+    <h3>Resume Services</h3>
+
+    <ul>
+
+        <li>
+            <a href="{% url 'create_resume' %}">
+                Create CV
+            </a>
+        </li>
+
+        <li>
+            Upload Existing CV
+        </li>
+
+        <li>
+            Analyze CV
+        </li>
+
+        <li>
+            View CV Score
+        </li>
+
+        <li>
+            View Suggestions
+        </li>
+
+    </ul>
+
+    <a href="{% url 'logout' %}">
+        Logout
+    </a>
+
+</body>
+
+</html>
