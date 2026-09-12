@@ -17,7 +17,17 @@ from .forms import (
     CVUploadForm,
 )
 
-from .models import UserProfile, Resume, Education, Skill, CVScore, Suggestion, ScoreDetail, ScoringCriteria
+from .models import (
+    UserProfile,
+    Resume,
+    Education,
+    Skill,
+    Project,
+    CVScore,
+    Suggestion,
+    ScoreDetail,
+    ScoringCriteria
+)
 
 
 def register(request):
@@ -248,6 +258,31 @@ def edit_skill(request, resume_id, skill_id):
             'form': form,
             'resume': resume,
             'skill': skill
+        }
+    )
+@login_required
+def edit_project(request, resume_id, project_id):
+    profile = get_object_or_404(UserProfile, user=request.user)
+    resume = get_object_or_404(Resume, id=resume_id, user=profile)
+    project = get_object_or_404(Project, id=project_id, resume=resume)
+
+    if request.method == 'POST':
+        form = ProjectForm(request.POST, instance=project)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Project updated successfully.')
+            return redirect('dashboard')
+    else:
+        form = ProjectForm(instance=project)
+
+    return render(
+        request,
+        'edit_project.html',
+        {
+            'form': form,
+            'resume': resume,
+            'project': project
         }
     )
 

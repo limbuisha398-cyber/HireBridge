@@ -72,6 +72,17 @@
         <a href="{% url 'edit_skill' resume_id=resume.id skill_id=skill.id %}">
             Edit Skill
         </a>
+        {% for project in resume.projects.all %}
+
+        <p>
+            Project: {{ project.project_name }}
+        </p>
+
+        <a href="{% url 'edit_project' resume_id=resume.id project_id=project.id %}">
+            Edit Project
+        </a>
+
+        {% endfor %}
 
         {% endfor %}
 

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>HireBridge - Edit Project</title>
+</head>
+
+<body>
+
+    <h1>Edit Project</h1>
+
+    <h2>{{ resume.title }}</h2>
+
+    <hr>
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">
+            Update Project
+        </button>
+
+    </form>
+
+    <br>
+
+    <a href="{% url 'dashboard' %}">
+        Back to Dashboard
+    </a>
+
+</body>
+
+</html>
