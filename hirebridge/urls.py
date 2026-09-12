@@ -9,6 +9,11 @@ urlpatterns = [
      path('profile/', views.profile, name='profile'),
      path('create-resume/', views.create_resume, name='create_resume'),
      path('resume/<int:resume_id>/education/', views.add_education, name='add_education'),
+     path(
+    'resume/<int:resume_id>/education/<int:education_id>/edit/',
+    views.edit_education,
+    name='edit_education'
+),
      path('resume/<int:resume_id>/skill/', views.add_skill, name='add_skill'),
      path(
     'resume/<int:resume_id>/work-experience/',
