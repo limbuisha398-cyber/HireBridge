@@ -86,7 +86,13 @@
             {{ work.company_name }}
         </p>
 
+        <a href="{% url 'edit_work_experience' resume_id=resume.id work_id=work.id %}">
+            Edit Work Experience
+        </a>
+
         {% endfor %}
+
+
 
         {% for project in resume.projects.all %}
 

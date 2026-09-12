@@ -35,6 +35,14 @@ path(
     views.add_work_experience,
     name='add_work_experience'
 ),
+
+path(
+    'resume/<int:resume_id>/work-experience/<int:work_id>/edit/',
+    views.edit_work_experience,
+    name='edit_work_experience'
+),
+
+
 path(
     'resume/<int:resume_id>/project/',
     views.add_project,

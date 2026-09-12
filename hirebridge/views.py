@@ -389,6 +389,53 @@ def add_work_experience(request, resume_id):
         }
     )
 
+@login_required
+def edit_work_experience(request, resume_id, work_id):
+    profile = get_object_or_404(
+        UserProfile,
+        user=request.user
+    )
+
+    resume = get_object_or_404(
+        Resume,
+        id=resume_id,
+        user=profile
+    )
+
+    work = get_object_or_404(
+        WorkExperience,
+        id=work_id,
+        resume=resume
+    )
+
+    if request.method == 'POST':
+        form = WorkExperienceForm(
+            request.POST,
+            instance=work
+        )
+
+        if form.is_valid():
+            form.save()
+            messages.success(
+                request,
+                'Work experience updated successfully.'
+            )
+            return redirect('dashboard')
+    else:
+        form = WorkExperienceForm(instance=work)
+
+    return render(
+        request,
+        'edit_work_experience.html',
+        {
+            'form': form,
+            'resume': resume,
+            'work': work
+        }
+    )
+
+
+
 
 @login_required
 def add_project(request, resume_id):
