@@ -1,32 +1,43 @@
-<!DOCTYPE html>
-<html>
+{% extends 'base.html' %}
+{% block title %}My Profile - HireBridge{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card p-4 mt-3">
+      <h3 class="text-center mb-4" style="color:#1F4E79;">My Profile</h3>
 
-<head>
-    <title>HireBridge - My Profile</title>
-</head>
-
-<body>
-
-    <h1>My Profile</h1>
-
-    {% if messages %}
-    {% for message in messages %}
-    <p>{{ message }}</p>
-    {% endfor %}
-    {% endif %}
-
-    <form method="post">
+      <form method="post">
         {% csrf_token %}
-
         {{ form.as_p }}
+        <button type="submit" class="btn btn-primary w-100 mt-2">Save Changes</button>
+      </form>
 
-        <button type="submit">Save Changes</button>
-    </form>
+      <a href="{% url 'dashboard' %}" class="btn btn-link mt-3 text-center">&larr; Back to Dashboard</a>
+    </div>
+  </div>
+</div>
 
-    <br>
-
-    <a href="{% url 'dashboard' %}">Back to Dashboard</a>
-
-</body>
-
-</html>
+<style>
+  form p { margin-bottom: 1rem; }
+  form label { display: block; font-weight: 500; margin-bottom: 4px; color: #333; }
+  form input, form select, form textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    font-size: 0.95rem;
+  }
+  form input:focus, form select:focus, form textarea:focus {
+    border-color: #1F4E79;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(31,78,121,0.15);
+  }
+  form ul.errorlist {
+    color: #dc3545;
+    font-size: 0.85rem;
+    list-style: none;
+    padding-left: 0;
+    margin-top: 4px;
+  }
+</style>
+{% endblock %}
