@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Manage Users - HireBridge{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h3 style="color:#1F4E79;">Manage Users</h3>
+  <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary btn-sm">&larr; Back to Admin Dashboard</a>
+</div>
+
+<div class="card p-4">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Full Name</th>
+        <th>Email</th>
+        <th>Address</th>
+        <th>Phone</th>
+        <th>Resumes</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for profile in users %}
+      <tr>
+        <td>{{ profile.user.username }}</td>
+        <td>{{ profile.user.get_full_name|default:"-" }}</td>
+        <td>{{ profile.user.email }}</td>
+        <td>{{ profile.address|default:"-" }}</td>
+        <td>
+          {% for phone in profile.phones.all %}
+            {{ phone.phone_number }}{% if not forloop.last %}, {% endif %}
+          {% empty %}
+            -
+          {% endfor %}
+        </td>
+        <td>{{ profile.resumes.count }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6" class="text-center text-muted">No users found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}
