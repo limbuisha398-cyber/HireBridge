@@ -6,6 +6,7 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('login/', views.user_login, name='login'),
     path('dashboard/', views.dashboard, name='dashboard'),
+    path('resume/<int:resume_id>/delete/', views.delete_resume, name='delete_resume'),
     path('logout/', views.user_logout, name='logout'),
     path('profile/', views.profile, name='profile'),
     path('create-resume/', views.create_resume, name='create_resume'),
@@ -15,21 +16,37 @@ urlpatterns = [
         views.edit_education,
         name='edit_education'
     ),
+    path('resume/<int:resume_id>/education/<int:education_id>/delete/', views.delete_education, name='delete_education'),
     path(
         'resume/<int:resume_id>/skill/<int:skill_id>/edit/',
         views.edit_skill,
         name='edit_skill'
     ),
     path(
+    'resume/<int:resume_id>/skill/<int:skill_id>/delete/',
+    views.delete_skill,
+    name='delete_skill'
+),
+    path(
         'resume/<int:resume_id>/project/<int:project_id>/edit/',
         views.edit_project,
         name='edit_project'
     ),
     path(
+    'resume/<int:resume_id>/project/<int:project_id>/delete/',
+    views.delete_project,
+    name='delete_project'
+),
+    path(
         'resume/<int:resume_id>/certification/<int:certification_id>/edit/',
         views.edit_certification,
         name='edit_certification'
     ),
+    path(
+    'resume/<int:resume_id>/certification/<int:certification_id>/delete/',
+    views.delete_certification,
+    name='delete_certification'
+),
     path('resume/<int:resume_id>/skill/', views.add_skill, name='add_skill'),
     path(
         'resume/<int:resume_id>/work-experience/',
@@ -41,6 +58,7 @@ urlpatterns = [
         views.edit_work_experience,
         name='edit_work_experience'
     ),
+    path('resume/<int:resume_id>/work-experience/<int:work_id>/delete/', views.delete_work_experience, name='delete_work_experience'),
     path(
         'resume/<int:resume_id>/project/',
         views.add_project,
