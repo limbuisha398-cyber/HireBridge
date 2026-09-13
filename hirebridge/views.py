@@ -466,6 +466,7 @@ def delete_certification(request, resume_id, certification_id):
         )
 
     return redirect('dashboard')
+
 @login_required
 def add_skill(request, resume_id):
     resume = get_object_or_404(
@@ -783,15 +784,27 @@ def analyze_cv(request, resume_id):
         ],
 
         'Work Experience': [
-            'intern',
-            'internship',
-            'developer',
-            'experience',
-            'responsibility',
-            'project',
-            'software',
-            'web',
-        ],
+    'intern',
+    'internship',
+    'developer',
+    'experience',
+    'responsibility',
+    'project',
+    'software',
+    'web',
+    'analyst',
+    'analysis',
+    'data',
+    'sql',
+    'python',
+    'excel',
+    'power bi',
+    'dashboard',
+    'report',
+    'reporting',
+    'insight',
+    'business',
+],
 
         'Projects': [
             'project',
