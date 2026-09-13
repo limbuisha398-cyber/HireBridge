@@ -1,9 +1,10 @@
 from io import BytesIO
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.http import HttpResponse
+from django.db.models import Avg
 
 from reportlab.lib.enums import TA_CENTER
 from reportlab.lib.pagesizes import A4
@@ -33,7 +34,9 @@ from .models import (
     CVScore,
     Suggestion,
     ScoreDetail,
-    ScoringCriteria
+    ScoringCriteria,
+    AdminProfile,
+    Application,
 )
 
 
@@ -79,7 +82,6 @@ def user_login(request):
         )
 
     return render(request, 'registration/login.html')
-
 @login_required
 def dashboard(request):
     profile, created = UserProfile.objects.get_or_create(
@@ -246,6 +248,8 @@ def edit_education(request, resume_id, education_id):
             'education': education,
         }
     )
+
+
 @login_required
 def edit_skill(request, resume_id, skill_id):
     profile = get_object_or_404(UserProfile, user=request.user)
@@ -271,6 +275,8 @@ def edit_skill(request, resume_id, skill_id):
             'skill': skill
         }
     )
+
+
 @login_required
 def edit_project(request, resume_id, project_id):
     profile = get_object_or_404(UserProfile, user=request.user)
@@ -296,6 +302,8 @@ def edit_project(request, resume_id, project_id):
             'project': project
         }
     )
+
+
 @login_required
 def edit_certification(request, resume_id, certification_id):
     profile = get_object_or_404(UserProfile, user=request.user)
@@ -398,6 +406,7 @@ def add_work_experience(request, resume_id):
         }
     )
 
+
 @login_required
 def edit_work_experience(request, resume_id, work_id):
     profile = get_object_or_404(
@@ -442,8 +451,6 @@ def edit_work_experience(request, resume_id, work_id):
             'work': work
         }
     )
-
-
 
 
 @login_required
@@ -741,11 +748,12 @@ def analyze_cv(request, resume_id):
             'suggestions': cv_score.suggestions.all(),
         }
     )
+
 @login_required
 def download_cv(request, resume_id):
     profile, created = UserProfile.objects.get_or_create(
-    user=request.user
-)
+        user=request.user
+    )
     resume = get_object_or_404(
         Resume,
         id=resume_id,
@@ -989,3 +997,46 @@ def download_cv(request, resume_id):
     )
 
     return response
+
+
+# ---------------- ADMIN VIEWS ----------------
+
+def is_admin(user):
+    return AdminProfile.objects.filter(user=user).exists()
+
+
+@login_required
+@user_passes_test(is_admin, login_url='dashboard')
+def admin_dashboard(request):
+    total_users = UserProfile.objects.count()
+    total_resumes = Resume.objects.count()
+    total_applications = Application.objects.count()
+    avg_score = CVScore.objects.aggregate(Avg('score'))['score__avg'] or 0
+
+    recent_resumes = Resume.objects.select_related('user__user').order_by('-date_created')[:10]
+
+    return render(
+        request,
+        'admin_dashboard.html',
+        {
+            'total_users': total_users,
+            'total_resumes': total_resumes,
+            'total_applications': total_applications,
+            'avg_score': round(avg_score, 1),
+            'recent_resumes': recent_resumes,
+        }
+    )
+
+
+@login_required
+@user_passes_test(is_admin, login_url='dashboard')
+def manage_users(request):
+    users = UserProfile.objects.select_related('user').all()
+    return render(request, 'manage_users.html', {'users': users})
+
+
+@login_required
+@user_passes_test(is_admin, login_url='dashboard')
+def manage_applications(request):
+    applications = Application.objects.select_related('user__user', 'resume').order_by('-application_date')
+    return render(request, 'manage_applications.html', {'applications': applications})
