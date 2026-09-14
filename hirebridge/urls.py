@@ -98,4 +98,9 @@ urlpatterns = [
     path('manage/dashboard/', views.admin_dashboard, name='admin_dashboard'),
     path('manage/users/', views.manage_users, name='manage_users'),
     path('manage/applications/', views.manage_applications, name='manage_applications'),
+    path(
+        'manage/applications/<int:application_id>/update/',
+        views.update_application_status,
+        name='update_application_status'
+    ),
 ]

@@ -1249,3 +1249,22 @@ def manage_users(request):
 def manage_applications(request):
     applications = Application.objects.select_related('user__user', 'resume').order_by('-application_date')
     return render(request, 'manage_applications.html', {'applications': applications})
+
+@login_required
+@user_passes_test(is_admin, login_url='dashboard')
+def update_application_status(request, application_id):
+    application = get_object_or_404(Application, id=application_id)
+
+    if request.method == 'POST':
+        new_status = request.POST.get('status')
+        valid_statuses = ['pending', 'shortlisted', 'accepted', 'rejected']
+
+        if new_status in valid_statuses:
+            application.status = new_status
+            application.save()
+            messages.success(
+                request,
+                f'Application status updated to {application.get_status_display()}.'
+            )
+
+    return redirect('manage_applications')
