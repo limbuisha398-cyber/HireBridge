@@ -21,6 +21,7 @@ from .forms import (
     ProjectForm,
     CertificationForm,
     CVUploadForm,
+    ApplicationForm,
 )
 
 from .models import (
@@ -1163,7 +1164,49 @@ def download_cv(request, resume_id):
     )
 
     return response
+@login_required
+def apply_for_position(request, resume_id):
+    profile = get_object_or_404(UserProfile, user=request.user)
+    resume = get_object_or_404(Resume, id=resume_id, user=profile)
 
+    if request.method == 'POST':
+        form = ApplicationForm(request.POST)
+
+        if form.is_valid():
+            application = form.save(commit=False)
+            application.user = profile
+            application.resume = resume
+            application.save()
+
+            messages.success(
+                request,
+                'Application submitted successfully.'
+            )
+
+            return redirect('my_applications')
+    else:
+        form = ApplicationForm()
+
+    return render(
+        request,
+        'apply.html',
+        {
+            'form': form,
+            'resume': resume,
+        }
+    )
+
+
+@login_required
+def my_applications(request):
+    profile = get_object_or_404(UserProfile, user=request.user)
+    applications = Application.objects.filter(user=profile).select_related('resume').order_by('-application_date')
+
+    return render(
+        request,
+        'my_applications.html',
+        {'applications': applications}
+    )
 
 # ---------------- ADMIN VIEWS ----------------
 
