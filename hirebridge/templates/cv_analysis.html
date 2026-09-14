@@ -11,46 +11,66 @@
       {% if cv_score.score >= 70 %}#198754{% elif cv_score.score >= 40 %}#fd7e14{% else %}#dc3545{% endif %};">
       {{ cv_score.score }}<span style="font-size:1.5rem; color:#888;"> / 100</span>
     </div>
+
     <div class="progress mx-auto" style="max-width: 400px; height: 10px;">
       <div class="progress-bar
-        {% if cv_score.score >= 70 %}bg-success{% elif cv_score.score >= 40 %}bg-warning{% else %}bg-danger{% endif %}"
-        role="progressbar" style="width: {{ cv_score.score }}%;"></div>
+    {% if cv_score.score >= 70 %}bg-success{% elif cv_score.score >= 40 %}bg-warning{% else %}bg-danger{% endif %}"
+        role="progressbar" style="width: {{ cv_score.score }}%;">
+      </div>
     </div>
+
   </div>
 </div>
 
 <div class="card p-4 mb-4">
   <h5 class="section-title">Score Breakdown</h5>
+
   {% for detail in score_details %}
+
   <div class="mb-3">
     <div class="d-flex justify-content-between">
       <span>{{ detail.criteria.criteria_name }}</span>
-      <span class="text-muted">{{ detail.obtained_score }} / {{ detail.criteria.maximum_score }}</span>
+      <span class="text-muted">
+        {{ detail.obtained_score }} / {{ detail.criteria.maximum_score }}
+      </span>
     </div>
+
     <div class="progress" style="height: 8px;">
       <div class="progress-bar bg-info" role="progressbar"
-        style="width: {% widthratio detail.obtained_score detail.criteria.maximum_score 100 %}%;"></div>
+        style="width: {% widthratio detail.obtained_score detail.criteria.maximum_score 100 %}%;">
+      </div>
     </div>
+
   </div>
   {% endfor %}
 </div>
 
 <div class="card p-4 mb-4">
   <h5 class="section-title">Improvement Suggestions</h5>
+
   {% if suggestions %}
-    <ul class="list-group list-group-flush">
-      {% for suggestion in suggestions %}
-        <li class="list-group-item d-flex align-items-start">
-          <i class="bi bi-lightbulb text-warning me-2 mt-1"></i>
-          <span>{{ suggestion.suggestion_text }}</span>
-        </li>
-      {% endfor %}
-    </ul>
+
+  <ul class="list-group list-group-flush">
+    {% for suggestion in suggestions %}
+    <li class="list-group-item d-flex align-items-start">
+      <i class="bi bi-lightbulb text-warning me-2 mt-1"></i>
+      <span>{{ suggestion.suggestion_text }}</span>
+    </li>
+    {% endfor %}
+  </ul>
   {% else %}
-    <p class="text-success mb-0"><i class="bi bi-check-circle"></i> Excellent! No improvement suggestions at this time.</p>
+  <p class="text-success mb-0">
+    <i class="bi bi-check-circle"></i>
+    Excellent! No improvement suggestions at this time.
+  </p>
   {% endif %}
 </div>
 
-<a href="{% url 'dashboard' %}" class="btn btn-outline-primary">&larr; Back to Dashboard</a>
+
+
+<a href="{% url 'dashboard' %}" class="btn btn-outline-primary">
+  &larr; Back to Dashboard
+</a>
+</div>
 
 {% endblock %}

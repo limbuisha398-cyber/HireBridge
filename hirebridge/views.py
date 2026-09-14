@@ -99,6 +99,30 @@ def dashboard(request):
         }
     )
 @login_required
+def delete_resume(request, resume_id):
+    profile, created = UserProfile.objects.get_or_create(
+        user=request.user
+    )
+
+    resume = get_object_or_404(
+        Resume,
+        id=resume_id,
+        user=profile
+    )
+
+    if request.method == 'POST':
+        resume.delete()
+        messages.success(request, 'Resume deleted successfully.')
+        return redirect('dashboard')
+
+    return render(
+        request,
+        'confirm_delete_resume.html',
+        {
+            'resume': resume,
+        }
+    )
+@login_required
 def user_logout(request):
     logout(request)
     return redirect('login')
@@ -248,6 +272,90 @@ def edit_education(request, resume_id, education_id):
             'education': education,
         }
     )
+@login_required
+def delete_education(request, resume_id, education_id):
+    profile = get_object_or_404(
+        UserProfile,
+        user=request.user
+    )
+
+    resume = get_object_or_404(
+        Resume,
+        id=resume_id,
+        user=profile
+    )
+
+    education = get_object_or_404(
+        Education,
+        id=education_id,
+        resume=resume
+    )
+
+    if request.method == 'POST':
+        education.delete()
+        messages.success(
+            request,
+            'Education deleted successfully.'
+        )
+        return redirect('dashboard')
+
+    return redirect('dashboard')
+@login_required
+def delete_skill(request, resume_id, skill_id):
+    profile = get_object_or_404(
+        UserProfile,
+        user=request.user
+    )
+
+    resume = get_object_or_404(
+        Resume,
+        id=resume_id,
+        user=profile
+    )
+
+    skill = get_object_or_404(
+        Skill,
+        id=skill_id,
+        resume=resume
+    )
+
+    if request.method == 'POST':
+        skill.delete()
+        messages.success(
+            request,
+            'Skill deleted successfully.'
+        )
+        return redirect('dashboard')
+
+    return redirect('dashboard')
+@login_required
+def delete_project(request, resume_id, project_id):
+    profile = get_object_or_404(
+        UserProfile,
+        user=request.user
+    )
+
+    resume = get_object_or_404(
+        Resume,
+        id=resume_id,
+        user=profile
+    )
+
+    project = get_object_or_404(
+        Project,
+        id=project_id,
+        resume=resume
+    )
+
+    if request.method == 'POST':
+        project.delete()
+        messages.success(
+            request,
+            'Project deleted successfully.'
+        )
+        return redirect('dashboard')
+
+    return redirect('dashboard')
 
 
 @login_required
@@ -340,6 +448,24 @@ def edit_certification(request, resume_id, certification_id):
         }
     )
 
+@login_required
+def delete_certification(request, resume_id, certification_id):
+    profile = get_object_or_404(UserProfile, user=request.user)
+    resume = get_object_or_404(Resume, id=resume_id, user=profile)
+    certification = get_object_or_404(
+        Certification,
+        id=certification_id,
+        resume=resume
+    )
+
+    if request.method == 'POST':
+        certification.delete()
+        messages.success(
+            request,
+            'Certification deleted successfully.'
+        )
+
+    return redirect('dashboard')
 
 @login_required
 def add_skill(request, resume_id):
@@ -452,6 +578,34 @@ def edit_work_experience(request, resume_id, work_id):
         }
     )
 
+@login_required
+def delete_work_experience(request, resume_id, work_id):
+    profile = get_object_or_404(
+        UserProfile,
+        user=request.user
+    )
+
+    resume = get_object_or_404(
+        Resume,
+        id=resume_id,
+        user=profile
+    )
+
+    work = get_object_or_404(
+        WorkExperience,
+        id=work_id,
+        resume=resume
+    )
+
+    if request.method == 'POST':
+        work.delete()
+        messages.success(
+            request,
+            'Work experience deleted successfully.'
+        )
+        return redirect('dashboard')
+
+    return redirect('dashboard')
 
 @login_required
 def add_project(request, resume_id):
@@ -630,15 +784,27 @@ def analyze_cv(request, resume_id):
         ],
 
         'Work Experience': [
-            'intern',
-            'internship',
-            'developer',
-            'experience',
-            'responsibility',
-            'project',
-            'software',
-            'web',
-        ],
+    'intern',
+    'internship',
+    'developer',
+    'experience',
+    'responsibility',
+    'project',
+    'software',
+    'web',
+    'analyst',
+    'analysis',
+    'data',
+    'sql',
+    'python',
+    'excel',
+    'power bi',
+    'dashboard',
+    'report',
+    'reporting',
+    'insight',
+    'business',
+],
 
         'Projects': [
             'project',
