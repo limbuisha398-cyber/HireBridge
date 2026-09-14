@@ -10,7 +10,10 @@ from .models import (
     Project,
     Certification,
     CVUpload,
+    Application,
 )
+
+
 class RegistrationForm(forms.ModelForm):
     password = forms.CharField(
         widget=forms.PasswordInput
@@ -148,10 +151,14 @@ class ProfileForm(forms.ModelForm):
             phone.delete()
 
         return profile
+
+
 class ResumeForm(forms.ModelForm):
     class Meta:
-     model = Resume
-     fields = ['title', 'status']
+        model = Resume
+        fields = ['title', 'status']
+
+
 class EducationForm(forms.ModelForm):
 
     class Meta:
@@ -170,7 +177,9 @@ class EducationForm(forms.ModelForm):
             'end_date': forms.DateInput(
                 attrs={'type': 'date'}
             ),
-        }     
+        }
+
+
 class SkillForm(forms.ModelForm):
 
     class Meta:
@@ -179,6 +188,8 @@ class SkillForm(forms.ModelForm):
             'skill_name',
             'skill_level',
         ]
+
+
 class WorkExperienceForm(forms.ModelForm):
 
     class Meta:
@@ -198,7 +209,9 @@ class WorkExperienceForm(forms.ModelForm):
             'end_date': forms.DateInput(
                 attrs={'type': 'date'}
             ),
-        } 
+        }
+
+
 class ProjectForm(forms.ModelForm):
 
     class Meta:
@@ -209,6 +222,8 @@ class ProjectForm(forms.ModelForm):
             'technologies_used',
             'project_link',
         ]
+
+
 class CertificationForm(forms.ModelForm):
 
     class Meta:
@@ -228,7 +243,9 @@ class CertificationForm(forms.ModelForm):
             'expiry_date': forms.DateInput(
                 attrs={'type': 'date'}
             ),
-        }  
+        }
+
+
 class CVUploadForm(forms.ModelForm):
 
     class Meta:
@@ -241,5 +258,16 @@ class CVUploadForm(forms.ModelForm):
                     'accept': '.pdf,.doc,.docx'
                 }
             ),
-        }  
- 
+        }
+
+
+class ApplicationForm(forms.ModelForm):
+
+    class Meta:
+        model = Application
+        fields = ['position']
+        widgets = {
+            'position': forms.TextInput(
+                attrs={'placeholder': 'e.g. Software Developer'}
+            ),
+        }

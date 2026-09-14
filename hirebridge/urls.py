@@ -84,7 +84,16 @@ urlpatterns = [
         views.download_cv,
         name='download_cv'
     ),
-
+        path(
+        'resume/<int:resume_id>/apply/',
+        views.apply_for_position,
+        name='apply_for_position'
+    ),
+    path(
+        'my-applications/',
+        views.my_applications,
+        name='my_applications'
+    ),
     # ---------------- ADMIN URLS ----------------
     path('manage/dashboard/', views.admin_dashboard, name='admin_dashboard'),
     path('manage/users/', views.manage_users, name='manage_users'),
