@@ -8,7 +8,7 @@
 </div>
 
 <div class="card p-4">
-  <table class="table table-hover">
+  <table class="table table-hover align-middle">
     <thead>
       <tr>
         <th>Applicant</th>
@@ -16,6 +16,7 @@
         <th>Resume</th>
         <th>Status</th>
         <th>Applied On</th>
+        <th>Update Status</th>
       </tr>
     </thead>
     <tbody>
@@ -34,9 +35,21 @@
           </span>
         </td>
         <td>{{ app.application_date|date:"M d, Y" }}</td>
+        <td>
+          <form method="post" action="{% url 'update_application_status' application_id=app.id %}" class="d-flex gap-2">
+            {% csrf_token %}
+            <select name="status" class="form-select form-select-sm" style="width: auto;">
+              <option value="pending" {% if app.status == 'pending' %}selected{% endif %}>Pending</option>
+              <option value="shortlisted" {% if app.status == 'shortlisted' %}selected{% endif %}>Shortlisted</option>
+              <option value="accepted" {% if app.status == 'accepted' %}selected{% endif %}>Accepted</option>
+              <option value="rejected" {% if app.status == 'rejected' %}selected{% endif %}>Rejected</option>
+            </select>
+            <button type="submit" class="btn btn-sm btn-primary">Update</button>
+          </form>
+        </td>
       </tr>
       {% empty %}
-      <tr><td colspan="5" class="text-center text-muted">No applications yet.</td></tr>
+      <tr><td colspan="6" class="text-center text-muted">No applications yet.</td></tr>
       {% endfor %}
     </tbody>
   </table>
