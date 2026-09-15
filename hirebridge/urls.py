@@ -103,4 +103,15 @@ urlpatterns = [
         views.update_application_status,
         name='update_application_status'
     ),
+    path('manage/resumes/', views.manage_resumes, name='manage_resumes'),
+path(
+    'manage/resumes/<int:resume_id>/',
+    views.admin_resume_detail,
+    name='admin_resume_detail'
+),
+path(
+    'manage/password/',
+    views.admin_change_password,
+    name='admin_change_password'
+),
 ]
