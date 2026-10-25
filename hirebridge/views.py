@@ -1,6 +1,7 @@
-from io import BytesIO
+﻿from io import BytesIO
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.http import HttpResponse
@@ -1268,3 +1269,47 @@ def update_application_status(request, application_id):
             )
 
     return redirect('manage_applications')
+
+
+@login_required
+@user_passes_test(is_admin, login_url='dashboard')
+def manage_resumes(request):
+    resumes = Resume.objects.select_related('user__user').order_by('-date_created')
+    return render(request, 'manage_resumes.html', {'resumes': resumes})
+
+
+@login_required
+@user_passes_test(is_admin, login_url='dashboard')
+def admin_resume_detail(request, resume_id):
+    resume = get_object_or_404(
+        Resume.objects.select_related('user__user'),
+        id=resume_id
+    )
+
+    latest_score = resume.scores.order_by('-scored_date').first()
+    uploaded_cv = resume.uploads.order_by('-upload_date').first()
+
+    return render(
+        request,
+        'admin_resume_detail.html',
+        {
+            'resume': resume,
+            'latest_score': latest_score,
+            'uploaded_cv': uploaded_cv,
+        }
+    )
+@login_required
+@user_passes_test(is_admin, login_url='dashboard')
+def admin_change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Password changed successfully. Please login again.')
+            logout(request)
+            return redirect('login')
+    else:
+        form = PasswordChangeForm(request.user)
+
+    return render(request, 'admin_change_password.html', {'form': form})
